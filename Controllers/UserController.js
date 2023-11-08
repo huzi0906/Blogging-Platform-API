@@ -39,4 +39,18 @@ let login = async (req, res) => {
     });
 };
 
-module.exports = { register, login };
+let viewProfile = async (req, res) => {
+  let { id } = req.params;
+  user
+    .findById(id)
+    .then(data => {
+      res.status(200).json({ Message: "User Found", data: data });
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+};
+
+let updateProfile = async (req, res) => {};
+
+module.exports = { register, login, viewProfile, updateProfile };
