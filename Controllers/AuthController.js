@@ -26,8 +26,8 @@ let login = async (req, res) => {
             email: data.email,
             isAdmin: data.isAdmin,
           },
-          process.env.JWT_SECRET,
-          { expiresIn: "1h" }
+          process.env.JWT_SECRET
+          //{ expiresIn: "1h" }
         );
         res.status(200).json({ Message: "Login Success", token: token });
       } else {
