@@ -4,6 +4,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const UserRouter = require("./Routes/UserRoutes.js");
+const BlogRouter = require("./Routes/BlogRoutes.js");
 
 const app = express();
 app.use(express.json());
@@ -14,6 +15,7 @@ app.listen(process.env.PORT || 3000, () => {
 });
 
 app.use("/user", UserRouter);
+app.use("/blog", BlogRouter);
 
 mongoose
   .connect(process.env.MONGODB_STRING)
