@@ -4,6 +4,7 @@ const {
   viewProfile,
   updateProfile,
 } = require("../Controllers/UserController");
+const AuthenticateUser = require("../Utils/Authenticate");
 
 const express = require("express");
 
@@ -12,6 +13,6 @@ const router = express.Router();
 router.post("/register", register);
 router.post("/login", login);
 router.get("/:id", viewProfile);
-router.get("/:id/update", updateProfile);
+router.put("/:id", AuthenticateUser, updateProfile);
 
 module.exports = router;
