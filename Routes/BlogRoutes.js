@@ -8,6 +8,7 @@ const {
   review,
 } = require("../Controllers/BlogController.js");
 const AuthenticateUser = require("../Utils/Authenticate.js");
+const CheckCreator = require("../Utils/CheckCreator.js");
 
 const express = require("express");
 
@@ -17,7 +18,7 @@ router.get("/", getAllBlogs);
 
 router.post("/", AuthenticateUser, createBlog);
 router.get("/:id", viewBlog);
-router.put("/:id", updateBlog);
+router.put("/:id", AuthenticateUser, CheckCreator, updateBlog);
 router.delete("/:id", deleteBlog);
 
 router.post("/:id/comment", AuthenticateUser, comment);

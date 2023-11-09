@@ -26,7 +26,21 @@ let viewBlog = async (req, res) => {
     });
 };
 
-let updateBlog = async (req, res) => {};
+let updateBlog = async (req, res) => {
+  let { id } = req.params;
+  let { title, content } = req.body;
+
+  console.log(title, content);
+
+  blog
+    .updateOne({ _id: id }, { $set: { title, content } })
+    .then(data => {
+      res.status(200).json({ Message: "Blog Updated" });
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+};
 
 let deleteBlog = async (req, res) => {};
 
