@@ -6,8 +6,8 @@ const {
   deleteBlog,
   comment,
   review,
-} = require("../Controllers/BlogController");
-const AuthenticateUser = require("../Utils/Authenticate");
+} = require("../Controllers/BlogController.js");
+const AuthenticateUser = require("../Utils/Authenticate.js");
 
 const express = require("express");
 

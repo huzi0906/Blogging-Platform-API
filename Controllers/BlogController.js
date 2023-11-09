@@ -1,4 +1,4 @@
-const blog = require("../Models/Blog.schema");
+const blog = require("../Models/Blog.schema.js");
 
 let getAllBlogs = async (req, res) => {};
 
