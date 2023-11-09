@@ -30,8 +30,6 @@ let updateBlog = async (req, res) => {
   let { id } = req.params;
   let { title, content } = req.body;
 
-  console.log(title, content);
-
   blog
     .updateOne({ _id: id }, { $set: { title, content } })
     .then(data => {
@@ -42,7 +40,18 @@ let updateBlog = async (req, res) => {
     });
 };
 
-let deleteBlog = async (req, res) => {};
+let deleteBlog = async (req, res) => {
+  let { id } = req.params;
+
+  blog
+    .findOneAndDelete({ _id: id })
+    .then(data => {
+      res.status(200).json({ Message: "Blog Deleted" });
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+};
 
 let comment = async (req, res) => {};
 let review = async (req, res) => {};

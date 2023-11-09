@@ -19,7 +19,7 @@ router.get("/", getAllBlogs);
 router.post("/", AuthenticateUser, createBlog);
 router.get("/:id", viewBlog);
 router.put("/:id", AuthenticateUser, CheckCreator, updateBlog);
-router.delete("/:id", deleteBlog);
+router.delete("/:id", AuthenticateUser, CheckCreator, deleteBlog);
 
 router.post("/:id/comment", AuthenticateUser, comment);
 router.post("/:id/review", AuthenticateUser, review);
