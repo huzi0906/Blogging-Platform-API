@@ -15,7 +15,7 @@ app.listen(process.env.PORT || 3000, () => {
 });
 
 app.use("/user", UserRouter);
-app.use("/blog", BlogRouter);
+app.use("/blogs", BlogRouter);
 
 mongoose
   .connect(process.env.MONGODB_STRING)
