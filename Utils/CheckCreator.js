@@ -6,7 +6,7 @@ let CheckCreator = async (req, res, next) => {
   blog
     .findById(id)
     .then(data => {
-      data.author === req.body.signedInUser.id
+      data.author.toString() === req.body.signedInUser.id
         ? next()
         : res.status(403).json({ Message: "You Are Not Authorized" });
     })
