@@ -1,6 +1,20 @@
 const blog = require("../Models/Blog.schema.js");
 
-let getAllBlogs = async (req, res) => {};
+let getAllBlogs = async (req, res) => {
+  const page = req.query.page || 1;
+  const limit = 2;
+
+  blog
+    .find()
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .then(data => {
+      res.status(200).json({ Message: "Blogs Found", data: data });
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+};
 
 let createBlog = async (req, res) => {
   let { title, content } = req.body;
