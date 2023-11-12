@@ -13,7 +13,7 @@ let getAllBlogs = async (req, res) => {
   sortOrder[sort[0]] = sort[1] ? sort[1] : "asc";
 
   blog
-    .find()
+    .find({ disabled: false })
     .populate("author", "username")
     .sort(sortOrder)
     .skip((page - 1) * limit)
@@ -77,7 +77,25 @@ let deleteBlog = async (req, res) => {
     });
 };
 
-let comment = async (req, res) => {};
+let comment = async (req, res) => {
+  let { id } = req.params;
+  let { comment } = req.body;
+  let userId = req.body.signedInUser.id;
+
+  blog
+    .findById(id)
+    .then(data => {
+      data.comments.push({ userId, comment });
+      return data.save();
+    })
+    .then(() => {
+      res.status(200).json({ Message: "Comment Added" });
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+};
+
 let review = async (req, res) => {};
 
 module.exports = {
