@@ -73,8 +73,29 @@ let unBlockUser = async (req, res) => {
     });
 };
 
-let disableBlog = (req, res) => {};
-let enableBlog = (req, res) => {};
+let disableBlog = async (req, res) => {
+  let { id } = req.params;
+  blog
+    .updateOne({ _id: id }, { $set: { disabled: true } })
+    .then(data => {
+      res.status(200).json({ Message: "Blog Disabled" });
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+};
+
+let enableBlog = async (req, res) => {
+  let { id } = req.params;
+  blog
+    .updateOne({ _id: id }, { $set: { disabled: false } })
+    .then(data => {
+      res.status(200).json({ Message: "Blog Enabled" });
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+};
 
 module.exports = {
   getAllUsers,
