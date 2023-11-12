@@ -8,6 +8,9 @@ const BlogRouter = require("./Routes/BlogRoutes.js");
 const AdminRouter = require("./Routes/AdminRoutes.js");
 const { register, login } = require("./Controllers/AuthController.js");
 
+const AuthenticateUser = require("./Utils/Authenticate.js");
+const CheckAdmin = require("./Utils/CheckAdmin.js");
+
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -21,7 +24,7 @@ app.post("/login", login);
 
 app.use("/users", UserRouter);
 app.use("/blogs", BlogRouter);
-app.use("/admin", AdminRouter);
+app.use("/admin", AuthenticateUser, CheckAdmin, AdminRouter);
 
 mongoose
   .connect(process.env.MONGODB_STRING)

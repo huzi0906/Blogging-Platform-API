@@ -34,7 +34,7 @@ const blogSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-blogSchema.virtual("averageRating").get(() => {
+blogSchema.virtual("averageRating").get(function () {
   if (this.ratings.length > 0) {
     let sum = this.ratings.reduce((total, rating) => total + rating.rating, 0);
     return sum / this.ratings.length;
