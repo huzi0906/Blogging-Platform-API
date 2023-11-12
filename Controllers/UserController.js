@@ -123,7 +123,19 @@ let unfollow = async (req, res) => {
   }
 };
 
-let viewNotifications = async (req, res) => {};
+let viewNotifications = async (req, res) => {
+  let { id } = req.params;
+  user
+    .findById(id)
+    .then(data => {
+      res
+        .status(200)
+        .json({ Message: "Notifications Found", data: data.notifications });
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+};
 
 module.exports = {
   viewProfile,
