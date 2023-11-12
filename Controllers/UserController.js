@@ -130,7 +130,10 @@ let viewNotifications = async (req, res) => {
     .then(data => {
       res
         .status(200)
-        .json({ Message: "Notifications Found", data: data.notifications });
+        .json({
+          Message: "Notifications Found",
+          data: data.notifications.reverse(),
+        });
     })
     .catch(err => {
       res.status(500).send(err);

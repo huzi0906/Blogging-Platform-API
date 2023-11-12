@@ -1,4 +1,5 @@
 const blog = require("../Models/Blog.schema.js");
+const user = require("../Models/User.schema.js");
 
 let getAllBlogs = async (req, res) => {
   // Pagination
@@ -86,6 +87,12 @@ let comment = async (req, res) => {
     .findById(id)
     .then(data => {
       data.comments.push({ userId, comment });
+      user.findById(data.author.toString()).then(dataa => {
+        dataa.notifications.push(
+          `${req.body.signedInUser.username} commented on your blog - ${data.title}`
+        );
+        return dataa.save();
+      });
       return data.save();
     })
     .then(() => {
