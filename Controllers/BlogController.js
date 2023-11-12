@@ -96,7 +96,35 @@ let comment = async (req, res) => {
     });
 };
 
-let review = async (req, res) => {};
+let rate = async (req, res) => {
+  let { id } = req.params;
+  let { rating } = req.body;
+  let userId = req.body.signedInUser.id;
+
+  if (rating < 1 || rating > 10) {
+    return res.status(400).json({ Message: "Rating must be between 1 and 10" });
+  }
+
+  blog
+    .findById(id)
+    .then(data => {
+      let userRating = data.ratings.find(r => r.userId.toString() === userId);
+      if (userRating) {
+        return res
+          .status(400)
+          .json({ Message: "You have already rated this blog" });
+      }
+
+      data.ratings.push({ userId, rating });
+      return data.save();
+    })
+    .then(() => {
+      res.status(200).json({ Message: "Rating Added" });
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+};
 
 module.exports = {
   getAllBlogs,
@@ -105,5 +133,5 @@ module.exports = {
   updateBlog,
   deleteBlog,
   comment,
-  review,
+  rate,
 };
