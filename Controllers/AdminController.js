@@ -49,8 +49,30 @@ let getAllBlogs = async (req, res) => {
     });
 };
 
-let blockUser = (req, res) => {};
-let unBlockUser = (req, res) => {};
+let blockUser = async (req, res) => {
+  let { id } = req.params;
+  user
+    .updateOne({ _id: id }, { $set: { blocked: true } })
+    .then(data => {
+      res.status(200).json({ Message: "User Blocked" });
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+};
+
+let unBlockUser = async (req, res) => {
+  let { id } = req.params;
+  user
+    .updateOne({ _id: id }, { $set: { blocked: false } })
+    .then(data => {
+      res.status(200).json({ Message: "User Unblocked" });
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+};
+
 let disableBlog = (req, res) => {};
 let enableBlog = (req, res) => {};
 
