@@ -5,6 +5,7 @@ require("dotenv").config();
 
 const UserRouter = require("./Routes/UserRoutes.js");
 const BlogRouter = require("./Routes/BlogRoutes.js");
+const AdminRouter = require("./Routes/AdminRoutes.js");
 const { register, login } = require("./Controllers/AuthController.js");
 
 const app = express();
@@ -20,6 +21,7 @@ app.post("/login", login);
 
 app.use("/users", UserRouter);
 app.use("/blogs", BlogRouter);
+app.use("/admin", AdminRouter);
 
 mongoose
   .connect(process.env.MONGODB_STRING)
