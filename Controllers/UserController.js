@@ -18,9 +18,13 @@ let updateProfile = async (req, res) => {
   if (id === req.body.signedInUser.id) {
     let { username, email, password } = req.body;
     user
-      .updateOne({ _id: id }, { $set: { username, email, password } })
+      .findOneAndUpdate(
+        { _id: id },
+        { $set: { username, email, password } },
+        { new: true }
+      )
       .then(data => {
-        res.status(200).json({ Message: "Profile Updated" });
+        res.status(200).json({ Message: "Profile Updated", data: data });
       })
       .catch(err => {
         res.status(500).send(err);
