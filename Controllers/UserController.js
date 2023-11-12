@@ -1,4 +1,5 @@
 const user = require("../Models/User.schema.js");
+const blog = require("../Models/Blog.schema.js");
 
 let viewProfile = async (req, res) => {
   let { id } = req.params;
@@ -27,6 +28,33 @@ let updateProfile = async (req, res) => {
   } else {
     res.status(403).json({ Message: "You Are Not Authorized" });
   }
+};
+
+let feed = async (req, res) => {
+  // Pagination
+  const page = req.query.page || 1;
+  const limit = 3;
+
+  // Sorting
+  let sort = req.query.sort || "createdAt";
+  sort = req.query.sort ? req.query.sort.split(",") : [sort];
+  let sortOrder = {};
+  sortOrder[sort[0]] = sort[1] ? sort[1] : "asc";
+
+  const userr = await user.findById(req.body.signedInUser.id);
+
+  blog
+    .find({ author: { $in: userr.following }, disabled: false })
+    .populate("author", "username")
+    .sort(sortOrder)
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .then(data => {
+      res.status(200).json({ Message: "Blogs Found", data: data });
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
 };
 
 let follow = async (req, res) => {
@@ -128,12 +156,10 @@ let viewNotifications = async (req, res) => {
   user
     .findById(id)
     .then(data => {
-      res
-        .status(200)
-        .json({
-          Message: "Notifications Found",
-          data: data.notifications.reverse(),
-        });
+      res.status(200).json({
+        Message: "Notifications Found",
+        data: data.notifications.reverse(),
+      });
     })
     .catch(err => {
       res.status(500).send(err);
@@ -143,6 +169,7 @@ let viewNotifications = async (req, res) => {
 module.exports = {
   viewProfile,
   updateProfile,
+  feed,
   follow,
   unfollow,
   viewNotifications,

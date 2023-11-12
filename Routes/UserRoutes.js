@@ -1,6 +1,7 @@
 const {
   viewProfile,
   updateProfile,
+  feed,
   follow,
   unfollow,
   viewNotifications,
@@ -14,6 +15,8 @@ const router = express.Router();
 
 router.get("/:id", CheckBlockedUser, viewProfile);
 router.put("/:id", AuthenticateUser, updateProfile);
+
+router.get("/:id/feed", AuthenticateUser, feed);
 
 router.post("/:id/follow", AuthenticateUser, CheckBlockedUser, follow);
 router.post("/:id/unfollow", AuthenticateUser, CheckBlockedUser, unfollow);
