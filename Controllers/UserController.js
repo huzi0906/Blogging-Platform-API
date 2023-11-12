@@ -29,4 +29,14 @@ let updateProfile = async (req, res) => {
   }
 };
 
-module.exports = { viewProfile, updateProfile };
+let follow = async (req, res) => {};
+let unfollow = async (req, res) => {};
+let viewNotifications = async (req, res) => {};
+
+module.exports = {
+  viewProfile,
+  updateProfile,
+  follow,
+  unfollow,
+  viewNotifications,
+};
