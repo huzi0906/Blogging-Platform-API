@@ -4,9 +4,16 @@ let AuthenticateUser = async (req, res, next) => {
   let token = req.headers.token;
 
   try {
-    let { password, ...user } = await jwt.verify(token, process.env.JWT_SECRET);
-    if (user) {
-      req.body.signedInUser = user;
+    let { id, username, email } = await jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    if (id && username && email) {
+      req.body.signedInUser = {};
+      req.body.signedInUser.id = id;
+      req.body.signedInUser.username = username;
+      req.body.signedInUser.email = email;
       next();
     } else {
       res.status(404).json({ Message: "Your Are Not Authenticated" });

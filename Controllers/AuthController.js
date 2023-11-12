@@ -24,7 +24,6 @@ let login = async (req, res) => {
             id: data._id,
             username: data.username,
             email: data.email,
-            isAdmin: data.isAdmin,
           },
           process.env.JWT_SECRET
           //{ expiresIn: "1h" }
