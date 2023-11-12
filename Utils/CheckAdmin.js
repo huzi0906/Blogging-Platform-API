@@ -4,7 +4,7 @@ let CheckAdmin = async (req, res, next) => {
   user
     .findById(req.body.signedInUser.id)
     .then(data => {
-      data.isAdmin === true
+      data.isAdmin
         ? next()
         : res.status(403).json({ Message: "You Are Not Authorized" });
     })
