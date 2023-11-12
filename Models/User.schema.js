@@ -7,6 +7,9 @@ const userSchema = mongoose.Schema(
     isAdmin: { type: Boolean, required: true },
     password: { type: String, required: true },
     blocked: { type: Boolean, required: true, default: false },
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    notifications: [{ type: String }],
   },
   { timestamps: true }
 );
