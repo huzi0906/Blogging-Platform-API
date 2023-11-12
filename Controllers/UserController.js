@@ -35,6 +35,8 @@ let updateProfile = async (req, res) => {
 };
 
 let feed = async (req, res) => {
+  const userr = await user.findById(req.body.signedInUser.id);
+
   // Pagination
   const page = req.query.page || 1;
   const limit = 3;
@@ -59,8 +61,6 @@ let feed = async (req, res) => {
   if (req.query.title) {
     searchQuery.title = { $regex: new RegExp(req.query.title, "i") };
   }
-
-  const userr = await user.findById(req.body.signedInUser.id);
 
   blog
     .find(searchQuery)
