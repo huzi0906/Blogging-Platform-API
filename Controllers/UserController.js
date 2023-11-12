@@ -75,7 +75,53 @@ let follow = async (req, res) => {
   }
 };
 
-let unfollow = async (req, res) => {};
+let unfollow = async (req, res) => {
+  let { id } = req.params;
+  let { signedInUser } = req.body;
+  if (id === signedInUser.id) {
+    res.status(403).json({ Message: "You Cannot Unfollow Yourself" });
+  } else {
+    user
+      .findOne({ _id: signedInUser.id, following: { $in: [id] } })
+      .then(data => {
+        if (data) {
+          user
+            .updateOne(
+              { _id: id },
+              {
+                $pull: {
+                  followers: signedInUser.id,
+                },
+                $push: {
+                  notifications: `${signedInUser.username} stopped following you`,
+                },
+              }
+            )
+            .then(data => {
+              user
+                .updateOne(
+                  { _id: signedInUser.id },
+                  { $pull: { following: id } }
+                )
+                .then(data => {
+                  res.status(200).json({ Message: "Unfollowed" });
+                })
+                .catch(err => {
+                  res.status(500).send(err);
+                });
+            })
+            .catch(err => {
+              res.status(500).send(err);
+            });
+        } else {
+          res.status(400).json({ Message: "Not Followed" });
+        }
+      })
+      .catch(err => {
+        res.status(500).send(err);
+      });
+  }
+};
 
 let viewNotifications = async (req, res) => {};
 
