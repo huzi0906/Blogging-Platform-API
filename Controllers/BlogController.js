@@ -1,11 +1,21 @@
 const blog = require("../Models/Blog.schema.js");
 
 let getAllBlogs = async (req, res) => {
+  // Pagination
   const page = req.query.page || 1;
-  const limit = 2;
+  const limit = 3;
+
+  // Sorting
+  let sort = req.query.sort || "createdAt";
+  sort = req.query.sort ? req.query.sort.split(",") : [sort];
+  // sort[0] = sort[0] === "author" ? "author.username" : sort[0];
+  let sortOrder = {};
+  sortOrder[sort[0]] = sort[1] ? sort[1] : "asc";
 
   blog
     .find()
+    .populate("author", "username")
+    .sort(sortOrder)
     .skip((page - 1) * limit)
     .limit(limit)
     .then(data => {
