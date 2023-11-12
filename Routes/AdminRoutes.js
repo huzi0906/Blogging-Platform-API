@@ -1,6 +1,7 @@
 const {
   getAllUsers,
   getAllBlogs,
+  viewBlog,
   blockUser,
   unBlockUser,
   disableBlog,
@@ -13,6 +14,8 @@ const router = express.Router();
 
 router.get("/users", getAllUsers);
 router.get("/blogs", getAllBlogs);
+
+router.get("/blogs/:id", viewBlog);
 
 router.patch("/users/:id/block", blockUser);
 router.patch("/users/:id/unblock", unBlockUser);
