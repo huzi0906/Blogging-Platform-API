@@ -9,12 +9,26 @@ let getAllBlogs = async (req, res) => {
   // Sorting
   let sort = req.query.sort || "createdAt";
   sort = req.query.sort ? req.query.sort.split(",") : [sort];
-  // sort[0] = sort[0] === "author" ? "author.username" : sort[0];
   let sortOrder = {};
   sortOrder[sort[0]] = sort[1] ? sort[1] : "asc";
 
+  // Search & Filtering
+  let searchQuery = { disabled: false };
+  if (req.query.keywords) {
+    searchQuery.keywords = { $in: req.query.keywords.split(",") };
+  }
+  if (req.query.categories) {
+    searchQuery.categories = { $in: req.query.categories.split(",") };
+  }
+  if (req.query.author) {
+    searchQuery.author = req.query.author;
+  }
+  if (req.query.title) {
+    searchQuery.title = { $regex: new RegExp(req.query.title, "i") };
+  }
+
   blog
-    .find({ disabled: false })
+    .find(searchQuery)
     .populate("author", "username")
     .sort(sortOrder)
     .skip((page - 1) * limit)
@@ -28,9 +42,15 @@ let getAllBlogs = async (req, res) => {
 };
 
 let createBlog = async (req, res) => {
-  let { title, content } = req.body;
+  let { title, content, keywords, categories } = req.body;
   blog
-    .create({ title, content, author: req.body.signedInUser.id })
+    .create({
+      title,
+      content,
+      keywords,
+      categories,
+      author: req.body.signedInUser.id,
+    })
     .then(data => {
       res.status(200).json({ Message: "Blog Created", data: data });
     })
@@ -53,10 +73,10 @@ let viewBlog = async (req, res) => {
 
 let updateBlog = async (req, res) => {
   let { id } = req.params;
-  let { title, content } = req.body;
+  let { title, content, keywords, categories } = req.body;
 
   blog
-    .updateOne({ _id: id }, { $set: { title, content } })
+    .updateOne({ _id: id }, { $set: { title, content, keywords, categories } })
     .then(data => {
       res.status(200).json({ Message: "Blog Updated" });
     })

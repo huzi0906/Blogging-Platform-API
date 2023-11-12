@@ -45,10 +45,25 @@ let feed = async (req, res) => {
   let sortOrder = {};
   sortOrder[sort[0]] = sort[1] ? sort[1] : "asc";
 
+  // Search & Filtering
+  let searchQuery = { author: { $in: userr.following }, disabled: false };
+  if (req.query.keywords) {
+    searchQuery.keywords = { $in: req.query.keywords.split(",") };
+  }
+  if (req.query.categories) {
+    searchQuery.categories = { $in: req.query.categories.split(",") };
+  }
+  if (req.query.author) {
+    searchQuery.author = req.query.author;
+  }
+  if (req.query.title) {
+    searchQuery.title = { $regex: new RegExp(req.query.title, "i") };
+  }
+
   const userr = await user.findById(req.body.signedInUser.id);
 
   blog
-    .find({ author: { $in: userr.following }, disabled: false })
+    .find(searchQuery)
     .populate("author", "username")
     .sort(sortOrder)
     .skip((page - 1) * limit)

@@ -20,12 +20,26 @@ let getAllBlogs = async (req, res) => {
   // Sorting
   let sort = req.query.sort || "createdAt";
   sort = req.query.sort ? req.query.sort.split(",") : [sort];
-  // sort[0] = sort[0] === "author" ? "author.username" : sort[0];
   let sortOrder = {};
   sortOrder[sort[0]] = sort[1] ? sort[1] : "asc";
 
+  // Search & Filtering
+  let searchQuery = {};
+  if (req.query.keywords) {
+    searchQuery.keywords = { $in: req.query.keywords.split(",") };
+  }
+  if (req.query.categories) {
+    searchQuery.categories = { $in: req.query.categories.split(",") };
+  }
+  if (req.query.author) {
+    searchQuery.author = req.query.author;
+  }
+  if (req.query.title) {
+    searchQuery.title = { $regex: new RegExp(req.query.title, "i") };
+  }
+
   blog
-    .find()
+    .find(searchQuery)
     .populate("author", "username")
     .sort(sortOrder)
     .skip((page - 1) * limit)
