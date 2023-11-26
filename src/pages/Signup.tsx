@@ -26,7 +26,7 @@ const schema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters."),
 });
 
-export default function SignUp() {
+const Signup = () => {
   const defaultTheme = useTheme();
   const navigate = useNavigate();
 
@@ -161,4 +161,6 @@ export default function SignUp() {
       </Container>
     </ThemeProvider>
   );
-}
+};
+
+export default Signup;

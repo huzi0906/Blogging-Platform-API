@@ -1,8 +1,10 @@
+import { useEffect } from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import LandingPage from "./pages/LandingPage";
-
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { useStore } from "./hooks/useStore";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +23,15 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const setToken = useStore(state => state.setToken);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      setToken(token);
+    }
+  }, []);
+
   return (
     <RouterProvider
       router={router}
