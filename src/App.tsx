@@ -3,14 +3,18 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Feed from "./components/Feed";
+import Blogs from "./components/Blogs";
 import { useStore } from "./hooks/useStore";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Feed />,
+    element: <Blogs endpoint="users/:id/feed" />,
     // children: [],
+  },
+  {
+    path: "/blogs",
+    element: <Blogs endpoint="blogs/" />,
   },
   {
     path: "login",

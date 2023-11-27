@@ -31,9 +31,6 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
           precision={0.1}
           readOnly
         />
-        <Typography variant="h5" component="h5">
-          {blog.averageRating}
-        </Typography>
       </Box>
     </Paper>
   );

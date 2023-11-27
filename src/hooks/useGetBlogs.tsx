@@ -3,11 +3,11 @@ import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import APIClient from "../services/apiClient";
 import { Blog } from "../types";
 
-const apiClient = new APIClient("users/:id/feed");
+const useGetBlogs = (endpoint: string): UseQueryResult<Blog[], Error> => {
+  const apiClient = new APIClient(endpoint);
 
-const useFeed = (): UseQueryResult<Blog[], Error> => {
   return useQuery({
-    queryKey: ["feed"],
+    queryKey: ["blogs"],
     queryFn: async () => {
       const response = await apiClient.getRequest();
       return response.data;
@@ -15,7 +15,7 @@ const useFeed = (): UseQueryResult<Blog[], Error> => {
   });
 };
 
-export default useFeed;
+export default useGetBlogs;
 
 //   params: {
 //     genres: gameQuery.genreId,

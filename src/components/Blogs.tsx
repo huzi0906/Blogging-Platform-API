@@ -9,12 +9,16 @@ import {
   useTheme,
 } from "@mui/material";
 
-import BlogCard from "../components/BlogCard";
-import useFeed from "../hooks/useFeed";
+import BlogCard from "./BlogCard";
+import useGetBlogs from "../hooks/useGetBlogs";
 
-const Feed = () => {
+interface BlogsProps {
+  endpoint: string;
+}
+
+const Blogs: React.FC<BlogsProps> = ({ endpoint }) => {
   const defaultTheme = useTheme();
-  const { isLoading, error, data: blogs } = useFeed();
+  const { isLoading, error, data: blogs } = useGetBlogs(endpoint);
   //  console.log(blogs);
 
   if (isLoading) {
@@ -65,4 +69,4 @@ const Feed = () => {
   );
 };
 
-export default Feed;
+export default Blogs;
