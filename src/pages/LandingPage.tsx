@@ -1,20 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Blog } from "../types";
 
-interface Author {
-  _id: string;
-  username: string;
-}
-
-interface Blog {
-  _id: string;
-  title: string;
-  content: string;
-  author: Author;
-  averageRating: number;
-}
-
-const LandingPage: React.FC = () => {
+const LandingPage = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
 
   useEffect(() => {

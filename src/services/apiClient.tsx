@@ -1,11 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosRequestConfig } from "axios";
 import { FieldValues } from "react-hook-form";
-
-export interface Response<T> {
-  Message: string;
-  data: T;
-}
+import { Response } from "../types";
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -13,8 +9,13 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(config => {
   const token = sessionStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
+
   if (token) {
     config.headers.token = token;
+  }
+  if (userId) {
+    config.headers.userId = userId;
   }
   return config;
 });

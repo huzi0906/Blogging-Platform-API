@@ -10,7 +10,6 @@ import {
   Container,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { useTheme, ThemeProvider } from "@mui/material/styles";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef } from "react";
@@ -27,7 +26,6 @@ const schema = z.object({
 });
 
 const Signup = () => {
-  const defaultTheme = useTheme();
   const navigate = useNavigate();
 
   const {
@@ -74,92 +72,90 @@ const Signup = () => {
   const form = useRef();
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <Box
+        sx={{
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Sign up
+        </Typography>
         <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
+          component="form"
+          ref={form}
+          noValidate
+          onSubmit={handleSubmit(checkData)}
+          sx={{ mt: 3 }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign up
-          </Typography>
-          <Box
-            component="form"
-            ref={form}
-            noValidate
-            onSubmit={handleSubmit(checkData)}
-            sx={{ mt: 3 }}
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                {...register("username")}
+                required
+                fullWidth
+                id="username"
+                label="User Name"
+                name="username"
+                autoComplete="username"
+                autoFocus
+                error={Boolean(errors.username)}
+                helperText={errors.username?.message as string | undefined}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                {...register("email")}
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                error={Boolean(errors.email)}
+                helperText={errors.email?.message as string | undefined}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                {...register("password")}
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="new-password"
+                error={Boolean(errors.password)}
+                helperText={errors.password?.message as string | undefined}
+              />
+            </Grid>
+          </Grid>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
           >
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  {...register("username")}
-                  required
-                  fullWidth
-                  id="username"
-                  label="User Name"
-                  name="username"
-                  autoComplete="username"
-                  autoFocus
-                  error={Boolean(errors.username)}
-                  helperText={errors.username?.message as string | undefined}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  {...register("email")}
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  error={Boolean(errors.email)}
-                  helperText={errors.email?.message as string | undefined}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  {...register("password")}
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                  error={Boolean(errors.password)}
-                  helperText={errors.password?.message as string | undefined}
-                />
-              </Grid>
+            Sign Up
+          </Button>
+          <Grid container justifyContent="center">
+            <Grid item>
+              <Link href="/login" variant="body2">
+                Login instead?
+              </Link>
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign Up
-            </Button>
-            <Grid container justifyContent="center">
-              <Grid item>
-                <Link href="/login" variant="body2">
-                  Login instead?
-                </Link>
-              </Grid>
-            </Grid>
-          </Box>
+          </Grid>
         </Box>
-      </Container>
-    </ThemeProvider>
+      </Box>
+    </Container>
   );
 };
 

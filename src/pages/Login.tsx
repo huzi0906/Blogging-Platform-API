@@ -10,7 +10,6 @@ import {
   Container,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { useTheme, ThemeProvider } from "@mui/material/styles";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef } from "react";
@@ -26,7 +25,6 @@ const schema = z.object({
 });
 
 const Login = () => {
-  const defaultTheme = useTheme();
   const navigate = useNavigate();
 
   const {
@@ -43,6 +41,8 @@ const Login = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const response: any = await mutation.mutateAsync(data);
       sessionStorage.setItem("token", response?.token);
+      sessionStorage.setItem("userId", response?.userId);
+
       // if (mutation.isSuccess) {
       toast.success("Login Successful", {
         position: "top-right",
@@ -75,75 +75,73 @@ const Login = () => {
   const form = useRef();
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <Box
+        sx={{
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Login
+        </Typography>
         <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
+          component="form"
+          ref={form}
+          noValidate
+          onSubmit={handleSubmit(checkData)}
+          sx={{ mt: 3 }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Login
-          </Typography>
-          <Box
-            component="form"
-            ref={form}
-            noValidate
-            onSubmit={handleSubmit(checkData)}
-            sx={{ mt: 3 }}
+          <TextField
+            {...register("email")}
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            error={Boolean(errors.email)}
+            helperText={errors.email?.message as string | undefined}
+          />
+          <TextField
+            {...register("password")}
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            error={Boolean(errors.password)}
+            helperText={errors.password?.message as string | undefined}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
           >
-            <TextField
-              {...register("email")}
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              error={Boolean(errors.email)}
-              helperText={errors.email?.message as string | undefined}
-            />
-            <TextField
-              {...register("password")}
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              error={Boolean(errors.password)}
-              helperText={errors.password?.message as string | undefined}
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Login
-            </Button>
-            <Grid container justifyContent="center">
-              <Grid item>
-                <Link href="/signup" variant="body2">
-                  Signup instead?
-                </Link>
-              </Grid>
+            Login
+          </Button>
+          <Grid container justifyContent="center">
+            <Grid item>
+              <Link href="/signup" variant="body2">
+                Signup instead?
+              </Link>
             </Grid>
-          </Box>
+          </Grid>
         </Box>
-      </Container>
-    </ThemeProvider>
+      </Box>
+    </Container>
   );
 };
 

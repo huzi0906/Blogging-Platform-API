@@ -3,14 +3,14 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import LandingPage from "./pages/LandingPage";
+import Feed from "./components/Feed";
 import { useStore } from "./hooks/useStore";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <LandingPage />,
-    children: [],
+    element: <Feed />,
+    // children: [],
   },
   {
     path: "login",
@@ -24,11 +24,17 @@ const router = createBrowserRouter([
 
 function App() {
   const setToken = useStore(state => state.setToken);
+  const setUserId = useStore(state => state.setUserId);
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+
     if (token) {
       setToken(token);
+    }
+    if (userId) {
+      setUserId(userId);
     }
   }, []);
 
