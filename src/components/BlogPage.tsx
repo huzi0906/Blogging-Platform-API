@@ -17,6 +17,7 @@ import useGetBlog from "../hooks/useGetBlog";
 import { useStore } from "../hooks/useStore";
 import { useState } from "react";
 import Ratings from "./Ratings";
+import Comment from "./Comment";
 
 type RouteParams = {
   [key: string]: string | undefined;
@@ -177,6 +178,12 @@ const BlogPage = () => {
               {blog.comments.length} comments
             </Typography>
             <Box>
+              {token && (
+                <Comment
+                  endpoint={`/blogs/${blog._id}/comment`}
+                  refetch={refetch}
+                />
+              )}
               {blog.comments.map((comment, index) => (
                 <Card key={index} style={{ margin: "10px 0" }} elevation={3}>
                   <CardContent>
