@@ -2,8 +2,10 @@ import { useParams } from "react-router-dom";
 
 import {
   Box,
+  Button,
   Card,
   CardContent,
+  Chip,
   CircularProgress,
   CssBaseline,
   Grid,
@@ -12,6 +14,9 @@ import {
 } from "@mui/material";
 
 import useGetBlog from "../hooks/useGetBlog";
+import { useStore } from "../hooks/useStore";
+import { useState } from "react";
+import Ratings from "./Ratings";
 
 type RouteParams = {
   [key: string]: string | undefined;
@@ -19,8 +24,19 @@ type RouteParams = {
 
 const BlogPage = () => {
   const { id } = useParams<RouteParams>();
+  const { token, userId } = useStore();
 
-  const { isLoading, error, data: blog } = useGetBlog(id as string);
+  const { isLoading, error, data: blog, refetch } = useGetBlog(id as string);
+
+  const [open, setOpen] = useState(false);
+
+  const handleOpenRatingDialog = () => {
+    setOpen(true);
+  };
+
+  const handleCloseRatingDialog = () => {
+    setOpen(false);
+  };
 
   if (isLoading) {
     return (
@@ -74,6 +90,24 @@ const BlogPage = () => {
                     blog.createdAt
                   ).toLocaleDateString()}`}
                 </Typography>
+
+                <Box
+                  display="flex"
+                  flexWrap="wrap"
+                  gap={1}
+                  marginTop={1}
+                  alignItems="center"
+                >
+                  <Typography variant="h6">Categories:</Typography>
+                  {blog.categories.map((category, index) => (
+                    <Chip
+                      key={index}
+                      label={category}
+                      variant="outlined"
+                      size="small"
+                    />
+                  ))}
+                </Box>
               </Grid>
               <Grid item>
                 <Box
@@ -88,11 +122,48 @@ const BlogPage = () => {
                   <Rating
                     name="read-only"
                     value={blog.averageRating}
+                    precision={0.1}
                     readOnly
                   />
                   <Typography variant="subtitle1" color="text.secondary">
                     ({blog.ratings.length})
                   </Typography>
+                </Box>
+                <Box m={0} p={1}>
+                  {token && (
+                    <Button
+                      variant="outlined"
+                      onClick={handleOpenRatingDialog}
+                      disabled={
+                        blog.ratings.find(rating => rating.userId === userId)
+                          ? true
+                          : false
+                      }
+                    >
+                      {blog.ratings.find(
+                        rating => rating.userId.toString() === userId
+                      )
+                        ? "Already rated"
+                        : "Rate blog"}
+                    </Button>
+                  )}
+                  <Ratings
+                    open={open}
+                    handleClose={handleCloseRatingDialog}
+                    endpoint={`/blogs/${blog._id}/rate`}
+                    refetch={refetch}
+                  />
+                </Box>
+
+                <Box display="flex" flexWrap="wrap" gap={1} marginTop={1}>
+                  {blog.keywords.map((keyword, index) => (
+                    <Chip
+                      key={index}
+                      label={`#${keyword}`}
+                      variant="filled"
+                      size="small"
+                    />
+                  ))}
                 </Box>
               </Grid>
             </Grid>
@@ -101,11 +172,9 @@ const BlogPage = () => {
               {blog.content}
             </Typography>
             <hr />
-            <Typography variant="h6">
-              Comments
-              <Typography variant="subtitle1" color="text.secondary">
-                {blog.comments.length} comments
-              </Typography>
+            <Typography variant="h6">Comments</Typography>
+            <Typography variant="subtitle1" color="text.secondary">
+              {blog.comments.length} comments
             </Typography>
             <Box>
               {blog.comments.map((comment, index) => (

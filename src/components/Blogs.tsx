@@ -56,7 +56,7 @@ const Blogs: React.FC<BlogsProps> = ({ endpoint }) => {
       <Container>
         <Grid container spacing={3} padding={3}>
           {blogs?.map(blog => (
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={4} key={blog._id}>
               <BlogCard blog={blog} />
             </Grid>
           ))}

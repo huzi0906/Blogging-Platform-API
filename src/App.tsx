@@ -46,7 +46,7 @@ function App() {
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
+    const userId = sessionStorage.getItem("userId");
 
     if (token) {
       setToken(token);
