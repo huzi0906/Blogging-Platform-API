@@ -4,9 +4,7 @@ import {
   Container,
   CssBaseline,
   Grid,
-  ThemeProvider,
   Typography,
-  useTheme,
 } from "@mui/material";
 
 import BlogCard from "./BlogCard";
@@ -17,28 +15,26 @@ interface BlogsProps {
 }
 
 const Blogs: React.FC<BlogsProps> = ({ endpoint }) => {
-  const defaultTheme = useTheme();
   const { isLoading, error, data: blogs } = useGetBlogs(endpoint);
   //  console.log(blogs);
 
   if (isLoading) {
     return (
-      <ThemeProvider theme={defaultTheme}>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="100vh"
-        >
-          <CircularProgress />
-        </Box>
-      </ThemeProvider>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+      >
+        <CssBaseline />
+        <CircularProgress />
+      </Box>
     );
   }
 
   if (error) {
     return (
-      <ThemeProvider theme={defaultTheme}>
+      <>
         <CssBaseline />
         <Box
           display="flex"
@@ -50,12 +46,13 @@ const Blogs: React.FC<BlogsProps> = ({ endpoint }) => {
             Error: {error.message}
           </Typography>
         </Box>
-      </ThemeProvider>
+      </>
     );
   }
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <>
+      <CssBaseline />
       <Container>
         <Grid container spacing={3} padding={3}>
           {blogs?.map(blog => (
@@ -65,7 +62,7 @@ const Blogs: React.FC<BlogsProps> = ({ endpoint }) => {
           ))}
         </Grid>
       </Container>
-    </ThemeProvider>
+    </>
   );
 };
 
