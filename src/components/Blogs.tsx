@@ -43,7 +43,7 @@ const Blogs: React.FC<BlogsProps> = ({ endpoint }) => {
           minHeight="100vh"
         >
           <Typography variant="h6" color="error">
-            Error: {error.message}
+            Could not fetch data
           </Typography>
         </Box>
       </>

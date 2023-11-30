@@ -10,11 +10,13 @@ import Signup from "./pages/Signup";
 import Blogs from "./components/Blogs";
 import { useStore } from "./hooks/useStore";
 import BlogPage from "./components/BlogPage";
+import CreateBlog from "./components/CreateBlog";
+import EditBlog from "./components/EditBlog";
 
 function App() {
   const setToken = useStore(state => state.setToken);
   const setUserId = useStore(state => state.setUserId);
-  const { token } = useStore();
+  const { token, blog } = useStore();
 
   const router = createBrowserRouter([
     {
@@ -41,6 +43,14 @@ function App() {
     {
       path: "blogs/:id",
       element: <BlogPage />,
+    },
+    {
+      path: "blogs/new",
+      element: <CreateBlog />,
+    },
+    {
+      path: "blogs/:id/edit",
+      element: <EditBlog blog={blog} />,
     },
   ]);
 

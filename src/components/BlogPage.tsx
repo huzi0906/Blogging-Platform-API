@@ -1,5 +1,5 @@
-import { useParams } from "react-router-dom";
-
+import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Box,
   Button,
@@ -11,13 +11,18 @@ import {
   Grid,
   Rating,
   Typography,
+  IconButton,
+  Popper,
+  Paper,
 } from "@mui/material";
+import { Edit, Delete } from "@mui/icons-material";
 
 import useGetBlog from "../hooks/useGetBlog";
 import { useStore } from "../hooks/useStore";
-import { useState } from "react";
 import Ratings from "./Ratings";
 import Comment from "./Comment";
+import useDeleteBlog from "../hooks/useDeleteBlog";
+import { toast } from "react-toastify";
 
 type RouteParams = {
   [key: string]: string | undefined;
@@ -25,11 +30,19 @@ type RouteParams = {
 
 const BlogPage = () => {
   const { id } = useParams<RouteParams>();
-  const { token, userId } = useStore();
+  const { token, userId, setBlog } = useStore();
+  const navigate = useNavigate();
 
   const { isLoading, error, data: blog, refetch } = useGetBlog(id as string);
+  const deleteEndpoint = `/blogs/${blog?._id}`;
+  const mutation = useDeleteBlog(deleteEndpoint);
 
   const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | (EventTarget & Element)>(
+    null
+  );
+
+  const idd = anchorEl ? "simple-popper" : undefined;
 
   const handleOpenRatingDialog = () => {
     setOpen(true);
@@ -64,22 +77,86 @@ const BlogPage = () => {
           minHeight="100vh"
         >
           <Typography variant="h6" color="error">
-            Error: {error ? error.message : "Blog not found"}
+            {error ? "Could not fetch data" : "Blog not found"}
           </Typography>
         </Box>
       </>
     );
   }
 
+  const handleEdit = () => {
+    setBlog(blog);
+    const path = `/blogs/${id}/edit`;
+    navigate(path);
+  };
+
+  const tryDelete = (event: React.MouseEvent) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await mutation.mutateAsync();
+      toast.success("Blog Deletion Successful", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+
+      navigate("/");
+    } catch (error) {
+      toast.error("Error: Blog could not be deleted", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    }
+  };
+
   return (
     <>
       <CssBaseline />
-      <Box padding={3}>
+      <Box padding={3} position="relative">
         <Card>
           <CardContent>
-            <Typography variant="h3" align="center">
+            <Typography variant="h3" align="center" marginY={5}>
               {blog.title}
             </Typography>
+            <Box position="absolute" right={30} top={30}>
+              <IconButton onClick={handleEdit}>
+                <Edit />
+              </IconButton>
+              <IconButton onClick={tryDelete}>
+                <Delete />
+              </IconButton>
+              <Popper id={idd} open={Boolean(anchorEl)} anchorEl={anchorEl}>
+                <Paper>
+                  <Box p={2}>
+                    <Typography>
+                      Are you sure you want to delete this blog?
+                    </Typography>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={handleDelete} color="secondary">
+                      Delete
+                    </Button>
+                  </Box>
+                </Paper>
+              </Popper>
+            </Box>
             <Grid container justifyContent="space-between" spacing={2}>
               <Grid item>
                 <Typography variant="subtitle1" color="text.secondary">
