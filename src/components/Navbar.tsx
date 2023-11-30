@@ -12,13 +12,14 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import { ThemeProvider, useTheme } from "@mui/material";
-
-const pages = ["Home", "Blogs", "Write"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+import { useStore } from "../hooks/useStore";
+import { CssBaseline } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
-  const defaultTheme = useTheme();
+  const { token, setToken, userId, setUserId } = useStore();
+  const navigate = useNavigate();
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
@@ -26,6 +27,50 @@ const Navbar = () => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
+
+  const pagesLoggedIn = [
+    { name: "Feed", link: "/feed" },
+    { name: "Blogs", link: "/blogs" },
+    { name: "Create Blog", link: "/blogs/new" },
+  ];
+  const settingsLoggedIn = [
+    { name: "Profile", function: OpenProfile },
+    { name: "Logout", function: Logout },
+  ];
+
+  function OpenProfile() {
+    navigate(`user/${userId}/profile`);
+  }
+
+  function Logout() {
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("userId");
+    setToken(null);
+    setUserId(null);
+
+    toast.success("Login Successful", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+
+    navigate("/");
+    window.location.reload();
+  }
+
+  const pagesLoggedOut = [{ name: "Blogs", link: "/blogs" }];
+
+  const handleLogin = () => {
+    navigate("/login");
+  };
+  const handleSignup = () => {
+    navigate("/signup");
+  };
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -43,7 +88,8 @@ const Navbar = () => {
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <>
+      <CssBaseline />
       <AppBar position="static">
         <Container maxWidth="xl">
           <Toolbar disableGutters>
@@ -95,9 +141,19 @@ const Navbar = () => {
                   display: { xs: "block", md: "none" },
                 }}
               >
-                {pages.map(page => (
-                  <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page}</Typography>
+                {(token ? pagesLoggedIn : pagesLoggedOut).map((page, index) => (
+                  <MenuItem key={index} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">
+                      <Link
+                        to={page.link}
+                        style={{
+                          textDecoration: "none",
+                          color: "inherit",
+                        }}
+                      >
+                        {page.name}
+                      </Link>
+                    </Typography>
                   </MenuItem>
                 ))}
               </Menu>
@@ -122,50 +178,66 @@ const Navbar = () => {
               LOGO
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              {pages.map(page => (
-                <Button
-                  key={page}
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: "white", display: "block" }}
-                >
-                  {page}
-                </Button>
+              {(token ? pagesLoggedIn : pagesLoggedOut).map((page, index) => (
+                <MenuItem key={index} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">
+                    <Link
+                      to={page.link}
+                      style={{
+                        textDecoration: "none",
+                        color: "inherit",
+                      }}
+                    >
+                      {page.name}
+                    </Link>
+                  </Typography>
+                </MenuItem>
               ))}
             </Box>
 
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: "45px" }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {settings.map(setting => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>
+            {token ? (
+              <Box sx={{ flexGrow: 0 }}>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar
+                      alt="Remy Sharp"
+                      src="/static/images/avatar/2.jpg"
+                    />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: "45px" }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  {settingsLoggedIn.map((setting, index) => (
+                    <MenuItem key={index} onClick={setting.function}>
+                      <Typography textAlign="center">{setting.name}</Typography>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </Box>
+            ) : (
+              <Box>
+                <Button onClick={handleLogin}>Login</Button>
+                <Button onClick={handleSignup}>Signup</Button>
+              </Box>
+            )}
           </Toolbar>
         </Container>
       </AppBar>
-    </ThemeProvider>
+    </>
   );
 };
 

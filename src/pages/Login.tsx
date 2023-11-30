@@ -55,7 +55,9 @@ const Login = () => {
         theme: "dark",
       });
       // }
+
       navigate("/");
+      window.location.reload();
     } catch (error) {
       toast.error("Error: Please try again", {
         position: "top-right",

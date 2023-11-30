@@ -7,7 +7,7 @@ const useGetBlogs = (endpoint: string): UseQueryResult<Blog[], Error> => {
   const apiClient = new APIClient(endpoint);
 
   return useQuery({
-    queryKey: ["blogs"],
+    queryKey: [endpoint],
     queryFn: async () => {
       const response = await apiClient.getRequest();
       return response.data;

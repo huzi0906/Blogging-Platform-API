@@ -7,7 +7,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import App from "./App";
-import Navbar from "./components/Navbar";
 
 const theme = createTheme({
   palette: {
@@ -32,7 +31,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         <>
-          <Navbar />
           <App />
           <ToastContainer />
         </>
