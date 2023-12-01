@@ -2,9 +2,9 @@ const user = require("../Models/User.schema.js");
 const jwt = require("jsonwebtoken");
 
 let register = async (req, res) => {
-  let { username, email, isAdmin, password } = req.body;
+  let { username, email, password } = req.body;
   user
-    .create({ username, email, isAdmin, password })
+    .create({ username, email, password })
     .then(data => {
       res.status(200).json({ Message: "User Created", data: data });
     })
@@ -28,7 +28,9 @@ let login = async (req, res) => {
           process.env.JWT_SECRET
           //{ expiresIn: "1h" }
         );
-        res.status(200).json({ Message: "Login Success", token: token });
+        res
+          .status(200)
+          .json({ Message: "Login Success", token: token, userId: data._id });
       } else {
         res.status(404).json({ Message: "User Not Found" });
       }

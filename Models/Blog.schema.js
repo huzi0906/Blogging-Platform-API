@@ -33,7 +33,7 @@ const blogSchema = mongoose.Schema(
       },
     ],
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 blogSchema.virtual("averageRating").get(function () {
@@ -43,6 +43,22 @@ blogSchema.virtual("averageRating").get(function () {
   } else {
     return 0;
   }
+});
+
+blogSchema.post("find", function (docs) {
+  for (let doc of docs) {
+    if (doc.comments) {
+      doc.comments = doc.comments.reverse();
+    }
+  }
+  return docs.reverse();
+});
+
+blogSchema.post("findOne", function (doc) {
+  if (doc && doc.comments) {
+    doc.comments = doc.comments.reverse();
+  }
+  return doc;
 });
 
 const model = mongoose.model("Blog", blogSchema);

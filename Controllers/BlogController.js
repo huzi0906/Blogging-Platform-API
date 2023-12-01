@@ -4,7 +4,7 @@ const user = require("../Models/User.schema.js");
 let getAllBlogs = async (req, res) => {
   // Pagination
   const page = req.query.page || 1;
-  const limit = 3;
+  const limit = 9;
 
   // Sorting
   let sort = req.query.sort || "createdAt";
@@ -34,6 +34,7 @@ let getAllBlogs = async (req, res) => {
     .skip((page - 1) * limit)
     .limit(limit)
     .then(data => {
+      data = data.map(doc => doc.toObject({ virtuals: true }));
       res.status(200).json({ Message: "Blogs Found", data: data });
     })
     .catch(err => {
@@ -63,6 +64,7 @@ let viewBlog = async (req, res) => {
   let { id } = req.params;
   blog
     .findById(id)
+    .populate("comments.userId", "username")
     .then(data => {
       res.status(200).json({ Message: "Blog Found", data: data });
     })
@@ -128,8 +130,8 @@ let rate = async (req, res) => {
   let { rating } = req.body;
   let userId = req.body.signedInUser.id;
 
-  if (rating < 1 || rating > 10) {
-    return res.status(400).json({ Message: "Rating must be between 1 and 10" });
+  if (rating < 1 || rating > 5) {
+    return res.status(400).json({ Message: "Rating must be between 1 and 5" });
   }
 
   blog

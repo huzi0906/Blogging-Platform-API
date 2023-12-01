@@ -4,7 +4,7 @@ const userSchema = mongoose.Schema(
   {
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    isAdmin: { type: Boolean, required: true },
+    isAdmin: { type: Boolean, required: true, default: false },
     password: { type: String, required: true },
     blocked: { type: Boolean, required: true, default: false },
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],

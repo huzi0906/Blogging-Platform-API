@@ -39,7 +39,7 @@ let feed = async (req, res) => {
 
   // Pagination
   const page = req.query.page || 1;
-  const limit = 3;
+  const limit = 9;
 
   // Sorting
   let sort = req.query.sort || "createdAt";
@@ -69,6 +69,7 @@ let feed = async (req, res) => {
     .skip((page - 1) * limit)
     .limit(limit)
     .then(data => {
+      data = data.map(doc => doc.toObject({ virtuals: true }));
       res.status(200).json({ Message: "Blogs Found", data: data });
     })
     .catch(err => {

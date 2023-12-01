@@ -15,7 +15,7 @@ let getAllUsers = async (req, res) => {
 let getAllBlogs = async (req, res) => {
   // Pagination
   const page = req.query.page || 1;
-  const limit = 10;
+  const limit = 9;
 
   // Sorting
   let sort = req.query.sort || "createdAt";
