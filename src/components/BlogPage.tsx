@@ -136,27 +136,29 @@ const BlogPage = () => {
             <Typography variant="h3" align="center" marginY={5}>
               {blog.title}
             </Typography>
-            <Box position="absolute" right={30} top={30}>
-              <IconButton onClick={handleEdit}>
-                <Edit />
-              </IconButton>
-              <IconButton onClick={tryDelete}>
-                <Delete />
-              </IconButton>
-              <Popper id={idd} open={Boolean(anchorEl)} anchorEl={anchorEl}>
-                <Paper>
-                  <Box p={2}>
-                    <Typography>
-                      Are you sure you want to delete this blog?
-                    </Typography>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleDelete} color="secondary">
-                      Delete
-                    </Button>
-                  </Box>
-                </Paper>
-              </Popper>
-            </Box>
+            {token && userId === blog.author.toString() && (
+              <Box position="absolute" right={30} top={30}>
+                <IconButton onClick={handleEdit}>
+                  <Edit />
+                </IconButton>
+                <IconButton onClick={tryDelete}>
+                  <Delete />
+                </IconButton>
+                <Popper id={idd} open={Boolean(anchorEl)} anchorEl={anchorEl}>
+                  <Paper>
+                    <Box p={2}>
+                      <Typography>
+                        Are you sure you want to delete this blog?
+                      </Typography>
+                      <Button onClick={handleClose}>Cancel</Button>
+                      <Button onClick={handleDelete} color="secondary">
+                        Delete
+                      </Button>
+                    </Box>
+                  </Paper>
+                </Popper>
+              </Box>
+            )}
             <Grid container justifyContent="space-between" spacing={2}>
               <Grid item>
                 <Typography variant="subtitle1" color="text.secondary">
